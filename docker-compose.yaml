@@ -1,0 +1,80 @@
+services:
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    image: server
+    container_name: mern-server-cont
+    env_file:
+      - path: ./server/.env.prod
+        required: true
+    ports:
+      - "${SERVERPORT}:${SERVERPORT}"
+    environment:
+      mongoDbUrl: mongodb://${MONGODB_USER}:${MONGODB_PASSWORD}@mongodb:27017
+      mongoDbName: Shortify
+      NODE_ENV: production
+    depends_on:
+      - mongodb
+    networks:
+      - shortify
+    volumes:
+      - ./server:/usr/src/app
+      - /app/node_modules
+
+    stdin_open: true
+    tty: true
+
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    image: client
+    container_name: mern-client-cont
+    restart: always
+    ports:
+      - "80:80"
+    networks:
+      - shortify
+
+    depends_on:
+      - mongodb
+      - server
+
+  mongodb:
+    restart: unless-stopped
+    image: mongo
+    container_name: mern-mongo-cont
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGODB_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_PASSWORD}
+    networks:
+      - shortify
+    volumes:
+      - shortify-data:/data/db
+
+  mongo-express:
+    restart: always
+    image: mongo-express
+    container_name: express-cont
+    ports:
+      - "8081:8081"
+    networks:
+      - shortify
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: ${MONGODB_USER}
+      ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGODB_PASSWORD}
+      ME_CONFIG_MONGODB_PORT: 27017
+      ME_CONFIG_MONGODB_SERVER: mongodb
+    depends_on:
+      - mongodb
+
+volumes:
+  shortify-data: {}
+
+networks:
+  shortify:
+    driver: bridge

@@ -1,0 +1,63 @@
+name: Shortify Ci
+run-name: Test and Deploy
+
+on:
+  push:
+    branches: ["main"]
+    tags:
+      - "*"
+  pull_request:
+    branches: ["main"]
+    types:
+      - opened
+      - synchronize
+
+  workflow_dispatch:
+
+jobs:
+  Test:
+    if: github.event_name == 'pull_request' && github.event.action == 'opened'
+    runs-on: [ubuntu-latest]
+    strategy:
+      matrix:
+        node-version: [18.x]
+
+    defaults:
+      run:
+        working-directory: ./server
+    steps:
+      - name: checkout the repo
+        uses: actions/checkout@v4
+
+      - name: setup nodejs ${{matrix.node-version}}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{matrix.node-version}}
+          cache: 'npm'
+
+      - name: Install dependecies
+        shell: bash
+        run: |
+          npm ci
+
+      - name: run tests
+        run: |
+          echo "Running your tests.."
+
+  Deploy:
+    needs: Test
+    runs-on: self-hosted
+
+    steps:
+      - name: checkout the repo
+        uses: actions/checkout@v4
+
+      - name: change file permissions
+        shell: bash
+        run: |
+          sudo chmod +x ./deploy.sh
+
+      - name: deploy latest updates
+        shell: bash
+        run: |
+          ./deploy.sh
