@@ -62,7 +62,6 @@ jobs:
           sudo chmod +x ./deploy.sh
 
       - name: deploy latest updates
-        if: github.ref == 'refs/heads/main'
         shell: bash
         run: |
           ./deploy.sh
