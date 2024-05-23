@@ -17,10 +17,7 @@ on:
 jobs:
   Test:
     if: github.event_name == 'pull_request' && github.event.action == 'opened'
-    runs-on:
-      - self-hosted
-      - production
-      
+    runs-on: [ubuntu-latest]
     strategy:
       matrix:
         node-version: [18.x]
@@ -49,7 +46,9 @@ jobs:
 
   Deploy:
     needs: Test
-    runs-on: self-hosted
+    runs-on:
+      - self-hosted
+      - production
 
     steps:
       - name: checkout the repo
