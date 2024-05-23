@@ -17,7 +17,10 @@ on:
 jobs:
   Test:
     if: github.event_name == 'pull_request' && github.event.action == 'opened'
-    runs-on: [ubuntu-latest]
+    runs-on:
+      - self-hosted
+      - production
+      
     strategy:
       matrix:
         node-version: [18.x]
