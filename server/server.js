@@ -21,7 +21,7 @@ if (process.env.NODE_ENV === "development") {
 
 app.get("/", async (req, res) => {
   res.status(200).json({
-    "Hello there": "Welcome to the url shorter. ",
+    "Hello there": "Welcome to the url shorter.. ",
   });
 });
 

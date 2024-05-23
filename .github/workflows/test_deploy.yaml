@@ -4,10 +4,9 @@ run-name: Test and Deploy
 on:
   push:
     branches:
-      - main
       - dev
     tags:
-      - "*"
+      - "v1.*"
   pull_request:
     branches: ["main"]
     types:
@@ -48,9 +47,11 @@ jobs:
           echo "Running your tests.."
 
   Deploy:
-    # if: github.event_name == 'pull_request' && github.event.action == 'opened'
+    if: github.event_name == 'pull_request' && github.event.action == 'opened'
     needs: Test
-    runs-on: self-hosted
+    runs-on:
+      - self-hosted
+      - production
 
     steps:
       - name: checkout the repo
