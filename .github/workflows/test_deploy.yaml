@@ -3,9 +3,10 @@ run-name: Test and Deploy
 
 on:
   push:
-    branches: ["main"]
+    branches:
+      - dev
     tags:
-      - "*"
+      - "v1.*"
   pull_request:
     branches: ["main"]
     types:
@@ -16,7 +17,6 @@ on:
 
 jobs:
   Test:
-    if: github.event_name == 'pull_request' && github.event.action == 'opened'
     runs-on: [ubuntu-latest]
     strategy:
       matrix:
@@ -28,25 +28,30 @@ jobs:
     steps:
       - name: checkout the repo
         uses: actions/checkout@v4
-
+      - name: check the files
+        run: |
+          pwd
+          ls 
       - name: setup nodejs ${{matrix.node-version}}
         uses: actions/setup-node@v4
         with:
           node-version: ${{matrix.node-version}}
-          cache: "npm"
 
       - name: Install dependecies
         shell: bash
         run: |
-          npm ci
+          npm install
 
       - name: run tests
         run: |
           echo "Running your tests.."
 
   Deploy:
+    if: github.event_name == 'pull_request' && github.event.action == 'opened'
     needs: Test
-    runs-on: self-hosted
+    runs-on:
+      - self-hosted
+      - production
 
     steps:
       - name: checkout the repo
