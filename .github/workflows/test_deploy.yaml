@@ -3,7 +3,9 @@ run-name: Test and Deploy
 
 on:
   push:
-    branches: ["main"]
+    branches:
+      - main
+      - dev
     tags:
       - "*"
   pull_request:
@@ -16,7 +18,6 @@ on:
 
 jobs:
   Test:
-    if: github.event_name == 'pull_request' && github.event.action == 'opened'
     runs-on: [ubuntu-latest]
     strategy:
       matrix:
@@ -45,6 +46,7 @@ jobs:
           echo "Running your tests.."
 
   Deploy:
+    if: github.event_name == 'pull_request' && github.event.action == 'opened'
     needs: Test
     runs-on: self-hosted
 
