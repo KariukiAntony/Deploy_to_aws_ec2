@@ -2,7 +2,7 @@ services:
   server:
     build:
       context: ./server
-      dockerfile: Dockerfile
+      dockerfile: prod.Dockerfile
     restart: unless-stopped
     image: server
     container_name: mern-server-cont
@@ -20,7 +20,7 @@ services:
     networks:
       - shortify
     volumes:
-      - ./server:/usr/src/app
+      - ./server:/app
       - /app/node_modules
 
     stdin_open: true

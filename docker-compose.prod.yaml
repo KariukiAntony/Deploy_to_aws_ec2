@@ -43,7 +43,7 @@ services:
   mongodb:
     restart: unless-stopped
     image: mongo
-    container_name: mern-mongo-cont
+    container_name: mongo-cont
     ports:
       - "27017:27017"
     environment:
