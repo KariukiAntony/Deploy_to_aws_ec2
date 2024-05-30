@@ -12,6 +12,7 @@ on:
     types:
       - opened
       - synchronize
+      - closed
 
   workflow_dispatch:
 
@@ -47,7 +48,7 @@ jobs:
           echo "Running your tests.."
 
   Deploy:
-    if: github.event_name == 'pull_request' && github.event.action == 'opened'
+    if: github.event_name == 'pull_request' && github.event.action == 'closed'
     needs: Test
     runs-on:
       - self-hosted
