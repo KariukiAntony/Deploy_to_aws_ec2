@@ -14,8 +14,8 @@ Shorify is completely deployed in AWS EC2 instance. It utilizes GitHub Actions a
 
 Install this project by cloning the repository
 ```shell
-  $ git clone 
-  $ cd 
+  $ git clone https://github.com/KariukiAntony/Deploy_to_aws_ec2.git
+  $ cd Deploy_to_aws_ec2
 ```
     
 ## Running

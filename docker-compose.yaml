@@ -73,7 +73,8 @@ services:
       - mongodb
 
 volumes:
-  shortify-data: {}
+  shortify-data:
+    driver: local
 
 networks:
   shortify:
